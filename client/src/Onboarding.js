@@ -73,6 +73,7 @@ const Onboarding = ({ user }) => {
     } else {
       getOnboardingSteps();
     }
+   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateField = (stepToUpdate, name, value) => {
@@ -161,6 +162,7 @@ const Onboarding = ({ user }) => {
     return (
       <Grid container className={classes.form}>
         {onboardingStep.map((step) => (
+          <>
           <TextField
             key={step.name}
             className={classes.textField}
@@ -173,6 +175,7 @@ const Onboarding = ({ user }) => {
             multiline={step.type === "multiline-text"}
             rows={4}
           />
+          </>
         ))}
 
         <Typography gutterBottom className={classes.error}>
