@@ -1,0 +1,50 @@
+name: CI
+on: [pull_request]
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build-and-test-server:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          key: backend-deps-${{ hashFiles('server/package.json') }}
+          path: |
+            server/node_modules
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+      - name: Install server
+        working-directory: ./server
+        run: npm install
+      - name: Run server tests
+        working-directory: ./server
+        run: npm run test
+  build-and-test-client:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          key: frontend-deps-${{ hashFiles('client/package.json') }}
+          path: |
+            client/node_modules
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+      - name: Install client
+        working-directory: ./client
+        run: npm install
+      - name: Run client tests
+        uses: cypress-io/github-action@v2
+        with:
+          working-directory: ./client
+          build: npm run build
+          start: npm start
