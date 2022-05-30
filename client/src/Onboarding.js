@@ -8,7 +8,6 @@ import {
   Switch,
   makeStyles,
 } from "@material-ui/core";
-
 import { useHistory } from "react-router-dom";
 import { makeDeepCopy } from "./utils/util";
 
@@ -49,6 +48,7 @@ const Onboarding = ({ user }) => {
     const getOnboardingSteps = async () => {
       const res = await axios.get("/api/onboarding");
       if (res.status !== 200) {
+        setErrorMessage("Unable to fetch onboarding steps")
         return;
       }
       const { steps } = res.data;
@@ -58,7 +58,7 @@ const Onboarding = ({ user }) => {
 
       for (const [index, step] of steps.entries()) {
         for (const element of step) {
-          element.value = element?.type === "yes-no" ? false : "";
+          element.value = element?.type === "yes-no" ? null : "";
         }
         steps[index] = step;
         setOnboardingStep(steps[0]);
@@ -76,7 +76,11 @@ const Onboarding = ({ user }) => {
       return;
     }
     if (copy[field]?.type === "yes-no") {
-      value = !copy[field].value;
+      if (copy[field].value === null){
+        value = true;
+      } else {
+        value = !copy[field].value;
+      }
     }
     copy[field] = {
       ...copy[field],
@@ -93,7 +97,6 @@ const Onboarding = ({ user }) => {
 
   const handleNotificationUpdate = (event) => {
     let { name, value } = event.target;
-    console.log(name, value);
     const copy = updateField(notificationsStep, name, value);
     setNotificationsStep(copy);
   };
@@ -115,7 +118,17 @@ const Onboarding = ({ user }) => {
     setStep(0);
   };
 
-  const handleSubmitForm = () => {};
+  const handleSubmitForm = () => {
+    const invalid = notificationsStep.findIndex(
+      (key) => (key.value === "" || key.value === null) && key.required
+    );
+    if (invalid !== -1) {
+      setErrorMessage("Please fill out all required fields before proceeding");
+      return;
+    } else {
+      setErrorMessage("");
+    }
+  };
 
   const renderOnboardingForm = () => {
     return (
@@ -161,7 +174,7 @@ const Onboarding = ({ user }) => {
             <FormControlLabel
               onChange={handleNotificationUpdate}
               className={classes.switch}
-              control={<Switch color="primary" checked={step.value} />}
+              control={<Switch color="primary" checked={step.value === true} />}
               label={step.label}
               name={step.name}
               required={step.required}
@@ -181,6 +194,9 @@ const Onboarding = ({ user }) => {
             />
           )
         )}
+         <Typography gutterBottom className={classes.error}>
+          {errorMessage}
+        </Typography>
 
         <Grid container direction="row" justifyContent="space-between">
           <Button
