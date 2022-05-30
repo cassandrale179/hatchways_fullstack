@@ -150,8 +150,7 @@ const Onboarding = ({ user }) => {
       }
       const res = await axios.post("/api/onboarding", body); 
       if (res.status === 200){
-        console.log(res);
-        // history.push("/home");
+        history.push("/home");
       } else {
         console.log(res)
       }
