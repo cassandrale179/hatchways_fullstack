@@ -1,6 +1,7 @@
 const Conversation = require("./conversation");
 const User = require("./user");
 const Message = require("./message");
+
 // associations
 
 User.hasMany(Conversation);
