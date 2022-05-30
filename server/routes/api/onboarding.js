@@ -91,16 +91,18 @@ router.post("/", async (req, res, next) => {
     }
     mergedObject["completedOnboarding"] = true;
     const result = await User.update(mergedObject, { where: { id: userId } });
-
-    // Only one user should be affected.
+  
     if (result.length === 1) {
-      const returnResult = {...user.dataValues};
-      delete returnResult["password"];
-      delete returnResult["salt"];
-      return res.status(201).json({ returnResult })
+       // Only one user should be affected.
+      const updatedUser = await User.findByPk(userId);
+      const body = {...updatedUser.dataValues};
+      delete body["password"];
+      delete body["salt"];
+      return res.status(200).json(updatedUser);
     } else {
       return res.status(500).json({ error: "Unable to properly update user." })
     }
+   
   } catch (error) {
     next(error);
   }
