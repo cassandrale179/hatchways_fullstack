@@ -2,6 +2,41 @@
 
 
 
+### Question 1
+Please describe a couple different ways that you could have approached state management for Part 1 of this ticket, and the advantages and disadvantages of each.
+
+
+## Current Approach
+So at the current moment, I think the way I approached the state management for Part 1 is a bit hardcoded. I have two states set, with one for each steps `onboardingStep` and `notificstionsStep`. 
+
+An advantage of this is that when updating state changes it is not too commplicated because you just need
+to loop through the desired array of the current step to find the field to update `const field = onboardingSteps.findIndex((key) => key.name === name);` 
+
+```javascript
+onboardingSteps = [{ name: 'firstName' }, {name: 'lastName'}]
+// key to look for = "firstName"
+```
+This would take O(n) time when updating because you only need to loop through the object once where n is the number of questions for each step. 
+
+However, the disadvantage of this approach is that is that by storing each step as a state variable, it is not very scalable if we receive a very complicated onboarding that has multiple steps.
+
+## Potential Approach
+Another potential approach is instead of storing each step as a state, have a state variable `steps` that store
+all the steps from `GET api/onboarding` into a variable as is: 
+
+```javascript
+const steps = {
+  [{'name': 'firstName', 'type': 'text'}, {'name': 'lastName', 'type': 'text'}], 
+  [{'name': 'country', 'type': 'text}....], 
+}
+```
+
+The advantage is that you do not need to create K state variables to store each step where K is equal to the number of steps in an onboarding form. 
+
+The disadvantage is that rendering the form on the frontend might be slightly complicated, especially when updating the variable as user enter their name / country...etc. One would first have to loop through each step, then for each step looped through all the questions per step to find the desired updated field.
+
+
+### Question 2 
 For the onboarding form, I would first define a model called Onboarding, so a file name `db/models/onboarding.js`. 
 
 ```javascript
