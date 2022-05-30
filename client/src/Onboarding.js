@@ -172,6 +172,7 @@ const Onboarding = ({ user }) => {
         {notificationsStep.map((step) =>
           step.type === "yes-no" ? (
             <FormControlLabel
+              key={step.name}
               onChange={handleNotificationUpdate}
               className={classes.switch}
               control={<Switch color="primary" checked={step.value === true} />}
