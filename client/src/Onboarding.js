@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Grid,
   TextField,
   Typography,
-  FormGroup,
   FormControlLabel,
   Switch,
   makeStyles,
@@ -70,25 +69,40 @@ const Onboarding = ({ user }) => {
     getOnboardingSteps();
   }, []);
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    console.log(name, value);
-
-    const copy = makeDeepCopy(onboardingStep);
-    const indexOfFieldToUpdate = copy.findIndex((key) => key.name === name);
-    if (indexOfFieldToUpdate === -1) {
+  const updateField = (stepToUpdate, name, value) => {
+    const copy = makeDeepCopy(stepToUpdate);
+    const field = copy.findIndex((key) => key.name === name);
+    if (field === -1) {
       return;
     }
-    copy[indexOfFieldToUpdate] = {
-      ...copy[indexOfFieldToUpdate],
+    if (copy[field]?.type === "yes-no") {
+      value = !copy[field].value;
+    }
+    copy[field] = {
+      ...copy[field],
       value: value,
     };
+    return copy;
+  };
 
+  const handleOnboardingUpdate = (event) => {
+    let { name, value } = event.target;
+    const copy = updateField(onboardingStep, name, value);
     setOnboardingStep(copy);
   };
 
+  const handleNotificationUpdate = (event) => {
+    let { name, value } = event.target;
+    console.log(name, value);
+    const copy = updateField(notificationsStep, name, value);
+    setNotificationsStep(copy);
+  };
+
   const handleNext = () => {
-    if (onboardingStep.firstName?.length === 0) {
+    const invalid = onboardingStep.findIndex(
+      (key) => key.value === "" && key.required
+    );
+    if (invalid !== -1) {
       setErrorMessage("Please fill out all required fields before proceeding");
       return;
     } else {
@@ -98,27 +112,26 @@ const Onboarding = ({ user }) => {
   };
 
   const handleBack = () => {
-    setStep(null);
+    setStep(0);
   };
 
-  const handleSubmitForm = () => {
-    //
-  };
+  const handleSubmitForm = () => {};
 
-  const renderForm = () => {
+  const renderOnboardingForm = () => {
     return (
       <Grid container className={classes.form}>
         {onboardingStep.map((step) => (
           <TextField
+            key={step.name}
             className={classes.textField}
             label={step.label}
             name={step.name}
             variant="standard"
             required={step.required}
             value={step.value}
-            onChange={handleChange}
+            onChange={handleOnboardingUpdate}
             multiline={step.type === "multiline-text"}
-            rows={step.type === "multiline-text" && 4}
+            rows={4}
           />
         ))}
 
@@ -126,7 +139,7 @@ const Onboarding = ({ user }) => {
           {errorMessage}
         </Typography>
 
-        <Grid container item xs={12} justify="flex-end">
+        <Grid container item xs={12} justifyContent="flex-end">
           <Button
             variant="contained"
             color="primary"
@@ -140,21 +153,35 @@ const Onboarding = ({ user }) => {
     );
   };
 
-  const renderSubscribeForm = () => {
+  const renderNotificationForm = () => {
     return (
       <Grid className={classes.form}>
-        <FormGroup>
-          <FormControlLabel
-            className={classes.switch}
-            control={<Switch color="primary" />}
-            label="I would like to receive email notifications for new messages when I'm logged out"
-          />
-          <FormControlLabel
-            className={classes.switch}
-            control={<Switch color="primary" />}
-            label="I would like to receive updates about the product via email"
-          />
-        </FormGroup>
+        {notificationsStep.map((step) =>
+          step.type === "yes-no" ? (
+            <FormControlLabel
+              onChange={handleNotificationUpdate}
+              className={classes.switch}
+              control={<Switch color="primary" checked={step.value} />}
+              label={step.label}
+              name={step.name}
+              required={step.required}
+            />
+          ) : (
+            <TextField
+              key={step.name}
+              className={classes.textField}
+              label={step.label}
+              name={step.name}
+              variant="standard"
+              required={step.required}
+              value={step.value}
+              onChange={handleNotificationUpdate}
+              multiline={step.type === "multiline-text"}
+              rows={4}
+            />
+          )
+        )}
+
         <Grid container direction="row" justifyContent="space-between">
           <Button
             variant="contained"
@@ -180,7 +207,7 @@ const Onboarding = ({ user }) => {
   return (
     <>
       {onboardingStep && notificationsStep ? (
-        <> {step === 0 ? renderForm() : renderSubscribeForm()} </>
+        <> {step === 0 ? renderOnboardingForm() : renderNotificationForm()} </>
       ) : (
         <div> Loading ... </div>
       )}
