@@ -1,9 +1,6 @@
 const Conversation = require("./conversation");
 const User = require("./user");
 const Message = require("./message");
-const Question = require("./question");
-const Onboarding = require("./onboarding");
-
 // associations
 
 User.hasMany(Conversation);

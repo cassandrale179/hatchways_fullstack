@@ -53,6 +53,10 @@ const User = db.define("user", {
   receiveUpdates: {
     type: Sequelize.BOOLEAN,
   },
+  completedOnboarding: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false,
+  }
 });
 
 User.prototype.correctPassword = function (password) {
