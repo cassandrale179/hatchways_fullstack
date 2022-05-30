@@ -48,7 +48,7 @@ const Onboarding = ({ user }) => {
     const getOnboardingSteps = async () => {
       const res = await axios.get("/api/onboarding");
       if (res.status !== 200) {
-        setErrorMessage("Unable to fetch onboarding steps")
+        setErrorMessage("Unable to fetch onboarding steps");
         return;
       }
       const { steps } = res.data;
@@ -76,7 +76,7 @@ const Onboarding = ({ user }) => {
       return;
     }
     if (copy[field]?.type === "yes-no") {
-      if (copy[field].value === null){
+      if (copy[field].value === null) {
         value = true;
       } else {
         value = !copy[field].value;
@@ -194,7 +194,7 @@ const Onboarding = ({ user }) => {
             />
           )
         )}
-         <Typography gutterBottom className={classes.error}>
+        <Typography gutterBottom className={classes.error}>
           {errorMessage}
         </Typography>
 
