@@ -112,7 +112,6 @@ const Routes = (props) => {
           path="/"
           render={(props) =>
             user?.id ? (
-              // <Home user={user} logout={logout} />
             <Onboarding user={user} />
             ) : (
               <Signup user={user} register={register} />
@@ -122,6 +121,10 @@ const Routes = (props) => {
         <Route
           path="/home"
           render={() => <Home user={user} logout={logout} />}
+        />
+          <Route
+          path="/onboarding"
+          render={() => <Onboarding user={user} />}
         />
       </Switch>
     </SocketContext.Provider>

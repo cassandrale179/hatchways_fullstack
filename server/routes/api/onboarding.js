@@ -66,7 +66,7 @@ router.post("/", async (req, res, next) => {
     const user = await User.findByPk(userId);
 
     if (user.completedOnboarding === true){
-      return res.status(400).json({ error: "User has already completed onboarding" })
+      return res.status(200).json({ error: "User has already completed onboarding" })
     }
   
     const { steps } = req.body;

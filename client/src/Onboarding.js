@@ -66,7 +66,13 @@ const Onboarding = ({ user }) => {
       }
       setStep(0);
     };
-    getOnboardingSteps();
+
+
+    if (user && user.id && user.completedOnboarding){
+      history.push("/home");
+    } else {
+      getOnboardingSteps();
+    }
   }, []);
 
   const updateField = (stepToUpdate, name, value) => {
@@ -118,7 +124,16 @@ const Onboarding = ({ user }) => {
     setStep(0);
   };
 
-  const handleSubmitForm = () => {
+  const getNameAndValueOnly = (stepToExtract) => {
+    const data = [];
+    for (const field of stepToExtract){
+      const filteredField = (({ name, value }) => ({ name, value }))(field);
+      data.push(filteredField)
+    }
+    return data;
+  }
+
+  const handleSubmitForm = async () => {
     const invalid = notificationsStep.findIndex(
       (key) => (key.value === "" || key.value === null) && key.required
     );
@@ -126,7 +141,19 @@ const Onboarding = ({ user }) => {
       setErrorMessage("Please fill out all required fields before proceeding");
       return;
     } else {
-      setErrorMessage("");
+      setErrorMessage("");      
+      const body = {
+        "steps": [
+          getNameAndValueOnly(onboardingStep),
+          getNameAndValueOnly(notificationsStep),
+        ]
+      }
+      const res = await axios.post("/api/onboarding", body); 
+      if (res.status === 201){
+        history.push("/home");
+      } else {
+        alert(res.json.error)
+      }
     }
   };
 
