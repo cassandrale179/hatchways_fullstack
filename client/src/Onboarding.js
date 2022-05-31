@@ -67,6 +67,7 @@ const Onboarding = ({ user }) => {
       setStep(0);
     };
 
+    getOnboardingSteps();
 
     if (user && user.id && user.completedOnboarding){
       history.push("/home");
