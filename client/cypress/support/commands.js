@@ -23,6 +23,7 @@ Cypress.Commands.add('interceptRegister', () => {
       id: 8,
       username: 'test',
       email: 'test@test.com',
+      completedOnboarding: false,
       password:
         'f146844e46abedfcfd10b04e3bd4276574fa74ae8102495aff19839f4993ec9f',
       updatedAt: '2022-05-25T16:11:33.581Z',

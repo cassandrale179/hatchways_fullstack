@@ -4,6 +4,8 @@ import { Route, Switch, withRouter } from "react-router-dom";
 
 import Signup from "./Signup.js";
 import Login from "./Login.js";
+import Onboarding from "./Onboarding.js";
+
 import { SnackbarError, Home } from "./components";
 import { SocketContext, socket } from "./context/socket";
 
@@ -110,7 +112,7 @@ const Routes = (props) => {
           path="/"
           render={(props) =>
             user?.id ? (
-              <Home user={user} logout={logout} />
+            <Onboarding user={user} />
             ) : (
               <Signup user={user} register={register} />
             )
@@ -119,6 +121,10 @@ const Routes = (props) => {
         <Route
           path="/home"
           render={() => <Home user={user} logout={logout} />}
+        />
+          <Route
+          path="/onboarding"
+          render={() => <Onboarding user={user} />}
         />
       </Switch>
     </SocketContext.Provider>

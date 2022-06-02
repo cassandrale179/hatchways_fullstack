@@ -32,7 +32,7 @@ const Signup = ({ user, register }) => {
   };
 
   useEffect(() => {
-    if (user && user.id) history.push("/home");
+    if (user && user.id) history.push("/onboarding");
   }, [user, history]);
 
   return (
