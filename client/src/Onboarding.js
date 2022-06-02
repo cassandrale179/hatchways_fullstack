@@ -43,6 +43,7 @@ const Onboarding = ({ user }) => {
   const [step, setStep] = useState(null);
   const [onboardingStep, setOnboardingStep] = useState(null);
   const [notificationsStep, setNotificationsStep] = useState(null);
+  const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
     const getOnboardingSteps = async () => {
@@ -77,6 +78,7 @@ const Onboarding = ({ user }) => {
    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+
   const updateField = (stepToUpdate, name, value) => {
     const copy = makeDeepCopy(stepToUpdate);
     const field = copy.findIndex((key) => key.name === name);
@@ -100,6 +102,12 @@ const Onboarding = ({ user }) => {
   const handleOnboardingUpdate = (event) => {
     let { name, value } = event.target;
     const copy = updateField(onboardingStep, name, value);
+    if (name === 'firstName' && value !== null){
+      setDisabled(false);
+    } 
+    if (name === 'firstName' && value?.length === 0){
+      setDisabled(true);
+    }
     setOnboardingStep(copy);
   };
 
@@ -189,6 +197,7 @@ const Onboarding = ({ user }) => {
             color="primary"
             className={classes.formButton}
             onClick={handleNext}
+            disabled={disabled}
           >
             Next
           </Button>
@@ -245,7 +254,7 @@ const Onboarding = ({ user }) => {
             className={classes.formButton}
             onClick={handleSubmitForm}
           >
-            Next
+            Finish
           </Button>
         </Grid>
       </Grid>
